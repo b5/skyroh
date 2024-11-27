@@ -1,0 +1,11 @@
+/target
+**/*.rs.bk
+.vscode
+.DS_Store
+.gitignore
+Dockerfile
+.dockerignore
+.git
+*.pem
+Rocket.toml
+rustc-*.txt
