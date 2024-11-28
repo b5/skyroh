@@ -26,7 +26,7 @@ pub const ALPN: &[u8] = b"DUMBPIPEV0";
 /// calls accept_bi() must consume it.
 pub const HANDSHAKE: [u8; 5] = *b"hello";
 
-#[derive(Parser, Debug)]
+#[derive(Parser, Debug, Default)]
 pub struct CommonArgs {
     /// The IPv4 address that magicsocket will listen on.
     ///

@@ -41,14 +41,29 @@ pub enum Commands {
     ConnectTcp(groundwork::dumbpipe::ConnectTcpArgs),
 }
 
+use groundwork::dumbpipe::{CommonArgs, ListenTcpArgs};
+use groundwork::peering::Peering;
+
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
-    let args = Args::parse();
-    let res = match args.command {
-        Commands::ListenTcp(args) => groundwork::dumbpipe::listen_tcp(args).await,
-        Commands::ConnectTcp(args) => groundwork::dumbpipe::connect_tcp(args).await,
+    // let args = Args::parse();
+    // let res = match args.command {
+    //     Commands::ListenTcp(args) => groundwork::dumbpipe::listen_tcp(args).await,
+    //     Commands::ConnectTcp(args) => groundwork::dumbpipe::connect_tcp(args).await,
+    // };
+    let repo_path = "./";
+    let state = Peering::open_or_create("did:plc:oogtn2wrdtfm4wgxemfxenn4", repo_path).await?;
+    println!("{:?}", state);
+
+    let args = ListenTcpArgs {
+        host: "localhost:8000".to_string(),
+        common: CommonArgs {
+            ..Default::default()
+        },
     };
+
+    let res = groundwork::dumbpipe::listen_tcp(args).await;
     match res {
         Ok(()) => std::process::exit(0),
         Err(e) => {
