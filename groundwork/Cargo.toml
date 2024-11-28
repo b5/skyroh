@@ -5,8 +5,12 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.93"
+atrium-api = "0.24.8"
+atrium-xrpc-client = { version = "0.5.10", features = ["reqwest"] }
+bsky-sdk = "0.1.13"
 bytes = "1.8.0"
 clap = { version = "4.5.21", features = ["derive"] }
+dotenv = "0.15.0"
 hex = "0.4.3"
 http = "1.1.0"
 http-body-util = "0.1.2"

@@ -1,4 +1,12 @@
+use std::env;
+
+use anyhow::Context;
 use clap::{Parser, Subcommand};
+use dotenv::dotenv;
+
+use groundwork::dumbpipe::{CommonArgs, ListenTcpArgs};
+use groundwork::peering::Peering;
+use groundwork::puppeteer;
 
 /// Create a dumb pipe between two machines, using an iroh magicsocket.
 ///
@@ -41,20 +49,29 @@ pub enum Commands {
     ConnectTcp(groundwork::dumbpipe::ConnectTcpArgs),
 }
 
-use groundwork::dumbpipe::{CommonArgs, ListenTcpArgs};
-use groundwork::peering::Peering;
-
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
+    dotenv().ok();
     tracing_subscriber::fmt::init();
+
+    let did = env::var("SKYROH_DID").context("missing SKYROH_DID env var")?;
+    let password =
+        env::var("SKYROH_APP_PASSWORD").context("missing SKYROH_APP_PASSWORD env var")?;
+
     // let args = Args::parse();
     // let res = match args.command {
     //     Commands::ListenTcp(args) => groundwork::dumbpipe::listen_tcp(args).await,
     //     Commands::ConnectTcp(args) => groundwork::dumbpipe::connect_tcp(args).await,
     // };
+
     let repo_path = "./";
-    let state = Peering::open_or_create("did:plc:oogtn2wrdtfm4wgxemfxenn4", repo_path).await?;
+    let state = Peering::open_or_create(did.as_str(), repo_path).await?;
     println!("{:?}", state);
+
+    let pptr =
+        puppeteer::Puppeteer::new("https://bsky.social", did.as_str(), password.as_str()).await?;
+    let commit = pptr.get_latest_commit().await?;
+    println!("oh snap a commit: {:?}", commit);
 
     let args = ListenTcpArgs {
         host: "localhost:8000".to_string(),
