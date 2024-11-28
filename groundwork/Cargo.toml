@@ -1,0 +1,21 @@
+[package]
+name = "groundwork"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.93"
+bytes = "1.8.0"
+clap = { version = "4.5.21", features = ["derive"] }
+hex = "0.4.3"
+http = "1.1.0"
+http-body-util = "0.1.2"
+hyper = { version = "1.5.1", features = ["full"] }
+hyper-util = { version = "0.1.10", features = ["full"] }
+# iroh = { version = "0.28.1", features = ["discovery-local-network"] }
+iroh-net = "0.28"
+quinn = { version = "0.12", package = "iroh-quinn" }
+tokio = { version = "1.41.1", features = ["full"] }
+tokio-util = "0.7.10"
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
