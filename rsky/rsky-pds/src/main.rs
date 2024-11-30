@@ -120,12 +120,6 @@ impl Fairing for CORS {
 async fn rocket() -> _ {
     dotenv().ok();
 
-    let iroh = iroh::node::Node::memory().spawn().await.unwrap();
-    println!(
-        "Iroh is running & online. public key: {:?}\n\n",
-        iroh.net().node_id().await
-    );
-
     let db_url = env::var("DATABASE_URL").unwrap_or("".into());
 
     let db: Map<_, Value> = map! {

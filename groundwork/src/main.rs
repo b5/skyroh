@@ -68,16 +68,23 @@ async fn main() -> anyhow::Result<()> {
     let state = Peering::open_or_create(did.as_str(), repo_path).await?;
     println!("{:?}", state);
 
-    let pptr =
-        puppeteer::Puppeteer::new("https://bsky.social", did.as_str(), password.as_str()).await?;
-    let commit = pptr.get_latest_commit().await?;
-    println!("oh snap a commit: {:?}", commit);
+    let mut pptr = puppeteer::Puppeteer::new("http://localhost:2583").await?;
+    pptr.login_bsky(&did, &password).await?;
+    pptr.create_local_account().await?;
+    let session = pptr.bsky_session().expect("no bsky session");
+    pptr.import_bsky_to_local(session.did.clone()).await?;
+    // pptr.login_local(&did, &password).await?;
+    // let commit = pptr.get_latest_commit().await?;
+    // println!("oh snap a commit: {:?}", commit);
+    // pptr.make_dummy_acct_and_post().await?;
+
+    // import specified repo
+    // let did = Did::new(did).expect("invalid did");
+    // pptr.import_repo(did.clone()).await?;
 
     let args = ListenTcpArgs {
         host: "localhost:8000".to_string(),
-        common: CommonArgs {
-            ..Default::default()
-        },
+        common: CommonArgs::default(),
     };
 
     let res = groundwork::dumbpipe::listen_tcp(args).await;
